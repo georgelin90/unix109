@@ -188,6 +188,7 @@ void readcontent(char *name)
 	struct dirent *dent;
 	dir = opendir(fdpath);
 	char *buf4,fdlink[20];
+	buf4 = malloc(bufsiz);
 	int dfd;
 	ssize_t v4;
 	struct stat st4;
@@ -203,21 +204,24 @@ void readcontent(char *name)
 			}
 			printf("%s\n", dent->d_name);
 			dfd = dirfd(dir);
+			for(int i = 0; i<20; i++)
+				fdlink[i] = '\0';
 			for(int i = 0; i < strlen(fdpath); i++)
 				fdlink[i] = fdpath[i];
 			fdlink[strlen(fdlink)] = '/';
 			strcat(fdlink, dent->d_name);
 			stat(fdlink, &st4);
 //			printf("inode: %u\n", st4.st_ino);
-/*			if((v4 = readlink(fdlink, buf4, bufsiz)) != -1)
+			if((v4 = readlink(fdlink, buf4, bufsiz)) != -1)
 				buf4[v4] = '\0';
 			else
 			{
-				printf("????");
-			//	perror("readlink");
-			//	exit(EXIT_FAILURE);
-			}*/
-			//printf("%s\n", buf4);
+				printf("%s", fdlink);
+	//			printf("????");
+				perror("readlink");
+	//			exit(EXIT_FAILURE);
+			}
+			printf("%s\n", buf4);
 			switch (st4.st_mode & S_IFMT) {
            case S_IFBLK:  printf("block device\n");            break;
            case S_IFCHR:  printf("character device\n");        break;
